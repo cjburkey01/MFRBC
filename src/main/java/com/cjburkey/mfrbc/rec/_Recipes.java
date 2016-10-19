@@ -13,13 +13,13 @@ public class _Recipes {
 	public static final void commonInit() {
 		// Items
 		addFurnace(new ItemStack(_Items.itemRefinedIron, 1), new ItemStack(Items.IRON_INGOT));
-		
-		add(new ItemStack(_Items.itemRefinedIron, 1), new Object[] { "xxx", "xxx", "xxx", Character.valueOf('x'), _Items.itemRefinedIronNugget });
+
+		addFull(new ItemStack(_Items.itemRefinedIron, 1), new ItemStack(_Items.itemRefinedIronNugget, 1));
 		addShapeless(new ItemStack(_Items.itemRefinedIron, 9), new ItemStack(_Blocks.blockRefinedIronBlock, 1));
 		addShapeless(new ItemStack(_Items.itemRefinedIronNugget, 9), new ItemStack(_Items.itemRefinedIron, 1));
 		
 		// Blocks
-		add(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new Object[] { "xxx", "xxx", "xxx", Character.valueOf('x'), _Items.itemRefinedIron });
+		addFull(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new ItemStack(_Items.itemRefinedIron, 1));
 	}
 	
 	// -- Registry -- //
@@ -30,6 +30,10 @@ public class _Recipes {
 	
 	private static final void addShapeless(ItemStack out, Object... rec) {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(out, rec));
+	}
+	
+	private static final void addFull(ItemStack out, ItemStack in) {
+		add(out, new Object[] { "xxx", "xxx", "xxx", Character.valueOf('x'), in.getItem() });
 	}
 	
 	private static final void addFurnace(ItemStack out, ItemStack in) {
