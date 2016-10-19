@@ -1,6 +1,7 @@
 package com.cjburkey.mfrbc;
 
 import com.cjburkey.mfrbc.proxy.CommonProxy;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -8,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+@Mod(name = Info.name, version = Info.version, modid = Info.id)
 public class MFRBC {
 	
 	@Instance
