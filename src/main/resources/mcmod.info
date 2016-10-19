@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mfrbc",
+  "name": "MFR/BC Replacement",
+  "description": "A replacement mod for MineFactory Reloaded and Buildcraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "logo.png",
+  "updateUrl": "",
+  "authorList": ["CJ Burkey"],
+  "credits": "The Forge and FML guys, for making forge.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
