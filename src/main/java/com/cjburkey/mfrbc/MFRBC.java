@@ -1,6 +1,8 @@
 package com.cjburkey.mfrbc;
 
+import org.apache.logging.log4j.LogManager;
 import com.cjburkey.mfrbc.proxy.CommonProxy;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -26,5 +28,7 @@ public class MFRBC {
 
 	@EventHandler
 	public static void postinit(FMLPostInitializationEvent e) { proxy.postinit(e); }
+	
+	public static final void log(Object msg) { LogManager.getLogger("MFRBC").info(msg); }
 	
 }

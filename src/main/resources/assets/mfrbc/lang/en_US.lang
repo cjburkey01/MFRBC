@@ -1,0 +1,7 @@
+itemGroup.mfrbcTabItems=MFRBC Items
+itemGroup.mfrbcTabBlocks=MFRBC Blocks
+
+item.itemRefinedIron.name=Refined Iron
+item.itemRefinedIronNugget.name=Refined Iron Nugget
+
+tile.blockRefinedIronBlock.name=Refined Iron Block
