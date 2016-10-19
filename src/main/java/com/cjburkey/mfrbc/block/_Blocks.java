@@ -17,9 +17,11 @@ public class _Blocks {
 	private static final HashMap<Block, Item> blocks = new HashMap<Block, Item>();
 	
 	public static Block blockRefinedIronBlock;
+	public static Block blockQuarry;
 	
 	public static final void commonPreinit() {
-		blockRefinedIronBlock = registerBlock("blockRefinedIronBlock", new Block(Material.IRON));
+		blockRefinedIronBlock = registerBlock("blockRefinedIronBlock", new Block(Material.IRON).setHardness(1.0f));
+		blockQuarry = registerBlock("blockQuarry", new BlockQuarry());
 	}
 	
 	// -- Registry -- //
