@@ -78,21 +78,25 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 				te.setCustomName(stack.getDisplayName());
 			}
 			world.setBlockState(pos, state.withProperty(FACING, player.getHorizontalFacing().getOpposite()), 2);
-			
-			BlockPos front = te.getInFront();
-			IBlockState s = world.getBlockState(front);
-			BlockPos[] at = null;
-			if(s != null) {
-				Block b = s.getBlock();
-				if(b instanceof BlockMarker) {
-					TileEntityMarker m = (TileEntityMarker) world.getTileEntity(front);
-					at = m.getMarkers();
-				}
+			checkForBounds(te, world, pos, player);
+		}
+	}
+	
+	public void checkForBounds(TileEntityQuarry te, World world, BlockPos pos, EntityLivingBase player) {
+		BlockPos front = te.getInFront();
+		IBlockState s = world.getBlockState(front);
+		BlockPos[] at = null;
+		if(s != null) {
+			Block b = s.getBlock();
+			if(b instanceof BlockMarker) {
+				TileEntityMarker m = (TileEntityMarker) world.getTileEntity(front);
+				m.search();
+				at = m.getMarkers();
 			}
-			if(at == null || at[0] == null || at[1] == null) {
-				world.destroyBlock(pos, true);
-				Util.chat(player, "[Quarry] Invalid Markers");
-			}
+		}
+		if(at == null || at[0] == null || at[1] == null) {
+			world.destroyBlock(pos, true);
+			Util.chat(player, "[Quarry] Invalid Markers");
 		}
 	}
 	

@@ -82,6 +82,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 				this.startZ = starts[0].getZ();
 				this.endX = starts[1].getX();
 				this.endZ = starts[1].getZ();
+				this.markDirty();
 				Util.log("Created quarry bounds: (" + this.startX + ", " + this.startZ + ") to (" + this.endX + ", " + this.endZ + ")");
 			}
 		}
@@ -384,6 +385,11 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		}
 		nbt.setInteger("Energy", this.energy);
 		
+		nbt.setInteger("startX", this.startX);
+		nbt.setInteger("startZ", this.startZ);
+		nbt.setInteger("endX", this.endX);
+		nbt.setInteger("endZ", this.endZ);
+		
 		return super.writeToNBT(nbt);
 	}
 	
@@ -403,6 +409,11 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		if (this.energy > this.capacity) {
 			this.energy = this.capacity;
 		}
+		
+		this.startX = nbt.getInteger("startX");
+		this.startZ = nbt.getInteger("startZ");
+		this.endX = nbt.getInteger("endX");
+		this.endZ = nbt.getInteger("endZ");
 		
 		super.readFromNBT(nbt);
 	}
