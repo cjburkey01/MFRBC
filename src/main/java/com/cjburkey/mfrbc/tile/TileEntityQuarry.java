@@ -3,6 +3,7 @@ package com.cjburkey.mfrbc.tile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 import com.cjburkey.mfrbc.MFRBC;
 import com.cjburkey.mfrbc._Config;
@@ -23,6 +24,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyReceiver, IInventory {
 	
@@ -174,6 +178,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			addStackToInv(i);
 		}
 		this.worldObj.destroyBlock(pos, false);
+		this.energy -= getRfPrice(pos);
 	}
 	
 	public boolean addStackToInv(ItemStack stack) {

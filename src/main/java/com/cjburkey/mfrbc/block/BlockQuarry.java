@@ -1,5 +1,6 @@
 package com.cjburkey.mfrbc.block;
 
+import java.util.Random;
 import javax.annotation.Nullable;
 import com.cjburkey.mfrbc.MFRBC;
 import com.cjburkey.mfrbc.gui.GuiHandler;
@@ -19,8 +20,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockQuarry extends BlockDirectional implements ITileEntityProvider {
 	
@@ -30,6 +34,16 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 		this.setHardness(1.0f);
 		this.setSoundType(SoundType.METAL);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+		this.setTickRandomly(true);
+	}
+	
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random r) {
+		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d, 0.0D, 0.0D, 0.0D, new int[0]);
 	}
 	
 	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
