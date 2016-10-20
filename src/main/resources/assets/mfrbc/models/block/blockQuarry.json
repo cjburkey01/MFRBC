@@ -1,6 +1,11 @@
 {
-    "parent": "block/cube_all",
+    "parent": "block/cube",
     "textures": {
-        "all": "mfrbc:blocks/blockQuarry"
+        "north": "mfrbc:blocks/quarry/blockQuarryN",
+        "south": "mfrbc:blocks/quarry/blockQuarryS",
+        "east": "mfrbc:blocks/quarry/blockQuarry_Side",
+        "west": "mfrbc:blocks/quarry/blockQuarry_Side",
+        "up": "mfrbc:blocks/quarry/blockQuarry_Top",
+        "down": "mfrbc:blocks/quarry/blockQuarry_Top"
     }
 }

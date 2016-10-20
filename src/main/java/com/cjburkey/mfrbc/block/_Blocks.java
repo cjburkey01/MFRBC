@@ -2,7 +2,7 @@ package com.cjburkey.mfrbc.block;
 
 import java.util.HashMap;
 import com.cjburkey.mfrbc.Info;
-import com.cjburkey.mfrbc.MFRBC;
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.item._Items;
 import com.cjburkey.mfrbc.tab._Tabs;
 import net.minecraft.block.Block;
@@ -39,7 +39,7 @@ public class _Blocks {
 		blocks.put(b, item);
 		
 		GameRegistry.register(b);
-		MFRBC.log("Registered block: '" + n + "'");
+		Util.log("Registered block: '" + n + "'");
 		return b;
 	}
 	

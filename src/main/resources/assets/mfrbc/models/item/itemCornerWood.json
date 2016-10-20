@@ -1,0 +1,21 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "w": "blocks/planks_oak"
+    },
+    "elements": [
+        {
+            "name": "Corner",
+            "from": [ 6.0, 0.0, 6.0 ], 
+            "to": [ 10.0, 4.0, 10.0 ], 
+            "faces": {
+                "north": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+                "east": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+                "south": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+                "west": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+                "up": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] },
+                "down": { "texture": "#w", "uv": [ 0.0, 0.0, 4.0, 4.0 ] }
+            }
+        }
+    ]
+}

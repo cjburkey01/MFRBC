@@ -1,5 +1,10 @@
 {
     "variants": {
-        "normal": { "model": "mfrbc:blockQuarry" }
+        "facing=north": { "model": "mfrbc:blockQuarry" },
+        "facing=south": { "model": "mfrbc:blockQuarry", "y": 180 },
+        "facing=west":  { "model": "mfrbc:blockQuarry", "y": 270 },
+        "facing=east":  { "model": "mfrbc:blockQuarry", "y": 90 },
+        "facing=down": { "model": "mfrbc:blockQuarry" },
+        "facing=up": { "model": "mfrbc:blockQuarry" }
     }
 }

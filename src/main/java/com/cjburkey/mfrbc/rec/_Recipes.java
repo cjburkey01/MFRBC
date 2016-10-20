@@ -2,7 +2,9 @@ package com.cjburkey.mfrbc.rec;
 
 import com.cjburkey.mfrbc.block._Blocks;
 import com.cjburkey.mfrbc.item._Items;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -17,9 +19,13 @@ public class _Recipes {
 		addFull(new ItemStack(_Items.itemRefinedIron, 1), new ItemStack(_Items.itemRefinedIronNugget, 1));
 		addShapeless(new ItemStack(_Items.itemRefinedIron, 9), new ItemStack(_Blocks.blockRefinedIronBlock, 1));
 		addShapeless(new ItemStack(_Items.itemRefinedIronNugget, 9), new ItemStack(_Items.itemRefinedIron, 1));
+		add(new ItemStack(_Items.itemWheelWood, 1), new Object[] { " x ", "xyx", " x ", 'x', "plankWood", 'y', "stickWood" });
 		
 		// Blocks
 		addFull(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new ItemStack(_Items.itemRefinedIron, 1));
+		add(new ItemStack(_Blocks.blockMarker, 1), new Object[] { "x", "y", 'x', "dyeBlue", 'y', new ItemStack(Blocks.TORCH, 1) });
+		add(new ItemStack(_Blocks.blockQuarry, 1), new Object[] { "xyx", "zaz", "xbx",
+				'x', _Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', Blocks.STONE, 'a', "blockSteel", 'b', _Items.itemQuarryHead });
 	}
 	
 	// -- Registry -- //
@@ -33,7 +39,7 @@ public class _Recipes {
 	}
 	
 	private static final void addFull(ItemStack out, ItemStack in) {
-		add(out, new Object[] { "xxx", "xxx", "xxx", Character.valueOf('x'), in.getItem() });
+		add(out, new Object[] { "xxx", "xxx", "xxx", 'x', in.getItem() });
 	}
 	
 	private static final void addFurnace(ItemStack out, ItemStack in) {

@@ -29,6 +29,4 @@ public class MFRBC {
 	@EventHandler
 	public static void postinit(FMLPostInitializationEvent e) { proxy.postinit(e); }
 	
-	public static final void log(Object msg) { LogManager.getLogger("MFRBC").info(msg); }
-	
 }

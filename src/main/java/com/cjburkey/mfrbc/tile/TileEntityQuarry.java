@@ -50,42 +50,46 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		this.maxReceive = _Config.quarryMaxReceive;
 	}
 	
-	public void scan() {
-		List<BlockPos> bs = new ArrayList<BlockPos>();
+	public void findBounds() {
 		this.startX = this.getPos().getX() + 1;
 		this.startZ = this.getPos().getZ() + 1;
 		
 		this.endX = this.getPos().getX() + (size + 1);
 		this.endZ = this.getPos().getZ() + (size + 1);
+	}
+	
+	public void scan() {
+		List<BlockPos> bs = new ArrayList<BlockPos>();
+		findBounds();
 		
-		if(endX > startX && endZ > startZ) {									// X+ Z+
-			for(int x = this.startX; x < this.endX; x ++) {
-				for(int z = this.startZ; z < this.endZ; z ++) {
-					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+		if(endX > startX && endZ > startZ) {			
+			for(int y = this.getPos().getY() + 1; y > 0; y --) {
+				for(int x = this.startX; x < this.endX; x ++) {
+					for(int z = this.startZ; z < this.endZ; z ++) {
 						logBlock(bs, x, y, z);
 					}
 				}
 			}
-		} else if(endX > startX && endZ < startZ) {								// X+ Z-
-			for(int x = this.startX; x < this.endX; x ++) {
-				for(int z = this.startZ; z > this.endZ; z --) {
-					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+		} else if(endX > startX && endZ < startZ) {
+			for(int y = this.getPos().getY() + 1; y > 0; y --) {
+				for(int x = this.startX; x < this.endX; x ++) {
+					for(int z = this.startZ; z > this.endZ; z --) {
 						logBlock(bs, x, y, z);
 					}
 				}
 			}
-		} else if(endX < startX && endZ < startZ) {								// X- Z-
-			for(int x = this.startX; x > this.endX; x --) {
-				for(int z = this.startZ; z > this.endZ; z --) {
-					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+		} else if(endX < startX && endZ < startZ) {
+			for(int y = this.getPos().getY() + 1; y > 0; y --) {
+				for(int x = this.startX; x > this.endX; x --) {
+					for(int z = this.startZ; z > this.endZ; z --) {
 						logBlock(bs, x, y, z);
 					}
 				}
 			}
-		} else if(endX < startX && endZ > startZ) {								// X- Z+
-			for(int x = this.startX; x > this.endX; x --) {
-				for(int z = this.startZ; z < this.endZ; z ++) {
-					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+		} else if(endX < startX && endZ > startZ) {
+			for(int y = this.getPos().getY() + 1; y > 0; y --) {
+				for(int x = this.startX; x > this.endX; x --) {
+					for(int z = this.startZ; z < this.endZ; z ++) {
 						logBlock(bs, x, y, z);
 					}
 				}

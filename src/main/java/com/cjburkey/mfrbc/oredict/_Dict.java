@@ -1,6 +1,6 @@
 package com.cjburkey.mfrbc.oredict;
 
-import com.cjburkey.mfrbc.MFRBC;
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.block._Blocks;
 import com.cjburkey.mfrbc.item._Items;
 import net.minecraft.block.Block;
@@ -25,7 +25,7 @@ public class _Dict {
 		} else if(ore instanceof Block) {
 			OreDictionary.registerOre(name, (Block) ore);
 		} else {
-			MFRBC.log("Unknown ore: '" + ore + "' trying to register as: '" + name + "'");
+			Util.log("Unknown ore: '" + ore + "' trying to register as: '" + name + "'");
 		}
 	}
 	
