@@ -4,7 +4,9 @@ import java.util.Random;
 import com.cjburkey.mfrbc.MFRBC;
 import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.gui.GuiHandler;
+import com.cjburkey.mfrbc.tile.TileEntityMarker;
 import com.cjburkey.mfrbc.tile.TileEntityQuarry;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -21,7 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -71,11 +72,28 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 	}
 	
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack stack) {
-		TileEntityQuarry te = (TileEntityQuarry) world.getTileEntity(pos);
-		if(stack.hasDisplayName()) {
-			te.setCustomName(stack.getDisplayName());
+		if(!world.isRemote) {
+			TileEntityQuarry te = (TileEntityQuarry) world.getTileEntity(pos);
+			if(stack.hasDisplayName()) {
+				te.setCustomName(stack.getDisplayName());
+			}
+			world.setBlockState(pos, state.withProperty(FACING, player.getHorizontalFacing().getOpposite()), 2);
+			
+			BlockPos front = te.getInFront();
+			IBlockState s = world.getBlockState(front);
+			BlockPos[] at = null;
+			if(s != null) {
+				Block b = s.getBlock();
+				if(b instanceof BlockMarker) {
+					TileEntityMarker m = (TileEntityMarker) world.getTileEntity(front);
+					at = m.getMarkers();
+				}
+			}
+			if(at == null || at[0] == null || at[1] == null) {
+				world.destroyBlock(pos, true);
+				Util.chat(player, "[Quarry] Invalid Markers");
+			}
 		}
-		world.setBlockState(pos, state.withProperty(FACING, player.getHorizontalFacing().getOpposite()), 2);
 	}
 	
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {

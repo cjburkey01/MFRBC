@@ -16,6 +16,9 @@ public class TileEntityMarker extends TileEntity {
 	}
 	
 	public void search() {
+		marker1 = null;
+		marker2 = null;
+		
 		for(int x = this.pos.getX() - _Config.quarryMaxSize; x < this.pos.getX(); x ++) {
 			BlockPos p = new BlockPos(x, this.pos.getY(), this.pos.getZ());
 			IBlockState s = this.worldObj.getBlockState(p);
@@ -76,7 +79,7 @@ public class TileEntityMarker extends TileEntity {
 				marker1 = new BlockPos(nbt.getDouble("marker1_x"), nbt.getDouble("marker1_y"), nbt.getDouble("marker1_z"));
 			}
 			if(nbt.hasKey("marker2_x") && nbt.hasKey("marker2_y") && nbt.hasKey("marker2_z")) {
-				marker1 = new BlockPos(nbt.getDouble("marker2_x"), nbt.getDouble("marker2_y"), nbt.getDouble("marker2_z"));
+				marker2 = new BlockPos(nbt.getDouble("marker2_x"), nbt.getDouble("marker2_y"), nbt.getDouble("marker2_z"));
 			}
 		}
 		

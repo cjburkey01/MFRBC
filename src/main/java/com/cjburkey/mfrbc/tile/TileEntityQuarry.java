@@ -78,11 +78,11 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			if(starts[0] == null || starts[1] == null) {
 				Util.log("Missing quarry markers");
 			} else {
-				Util.log("Created quarry bounds.");
 				this.startX = starts[0].getX();
-				this.startX = starts[0].getZ();
+				this.startZ = starts[0].getZ();
 				this.endX = starts[1].getX();
 				this.endZ = starts[1].getZ();
+				Util.log("Created quarry bounds: (" + this.startX + ", " + this.startZ + ") to (" + this.endX + ", " + this.endZ + ")");
 			}
 		}
 	}
@@ -95,7 +95,9 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
 				for(int x = this.startX; x < this.endX; x ++) {
 					for(int z = this.startZ; z < this.endZ; z ++) {
-						logBlock(bs, x, y, z);
+						if(x != this.startX && z != this.startZ) {
+							logBlock(bs, x, y, z);
+						}
 					}
 				}
 			}
@@ -103,7 +105,9 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
 				for(int x = this.startX; x < this.endX; x ++) {
 					for(int z = this.startZ; z > this.endZ; z --) {
-						logBlock(bs, x, y, z);
+						if(x != this.startX && z != this.startZ && x != this.endX && z != this.endZ) {
+							logBlock(bs, x, y, z);
+						}
 					}
 				}
 			}
@@ -111,7 +115,9 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
 				for(int x = this.startX; x > this.endX; x --) {
 					for(int z = this.startZ; z > this.endZ; z --) {
-						logBlock(bs, x, y, z);
+						if(x != this.startX && z != this.startZ && x != this.endX && z != this.endZ) {
+							logBlock(bs, x, y, z);
+						}
 					}
 				}
 			}
@@ -119,7 +125,9 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
 				for(int x = this.startX; x > this.endX; x --) {
 					for(int z = this.startZ; z < this.endZ; z ++) {
-						logBlock(bs, x, y, z);
+						if(x != this.startX && z != this.startZ && x != this.endX && z != this.endZ) {
+							logBlock(bs, x, y, z);
+						}
 					}
 				}
 			}
