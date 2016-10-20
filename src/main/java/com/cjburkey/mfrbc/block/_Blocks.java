@@ -18,10 +18,12 @@ public class _Blocks {
 	
 	public static Block blockRefinedIronBlock;
 	public static Block blockQuarry;
+	public static Block blockMarker;
 	
 	public static final void commonPreinit() {
 		blockRefinedIronBlock = registerBlock("blockRefinedIronBlock", new Block(Material.IRON).setHardness(1.0f));
 		blockQuarry = registerBlock("blockQuarry", new BlockQuarry());
+		blockMarker = registerBlock("blockMarker", new BlockMarker());
 	}
 	
 	// -- Registry -- //

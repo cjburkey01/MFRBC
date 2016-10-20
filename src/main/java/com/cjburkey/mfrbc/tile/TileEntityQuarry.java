@@ -51,29 +51,59 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public void scan() {
+		List<BlockPos> bs = new ArrayList<BlockPos>();
 		this.startX = this.getPos().getX() + 1;
 		this.startZ = this.getPos().getZ() + 1;
 		
 		this.endX = this.getPos().getX() + (size + 1);
 		this.endZ = this.getPos().getZ() + (size + 1);
 		
-		List<BlockPos> bs = new ArrayList<BlockPos>();
-		for(int x = this.startX; x < this.endX; x ++) {
-			for(int z = this.startZ; z < this.endZ; z ++) {
-				for(int y = this.getPos().getY() + 1; y > 0; y --) {
-					BlockPos p = new BlockPos(x, y, z);
-					IBlockState state = this.worldObj.getBlockState(p);
-					Block b = state.getBlock();
-					if(!state.equals(null) && !b.equals(Blocks.AIR) && !(b instanceof BlockLiquid) && (getHardness(p) >= 0)) {
-						bs.add(p);
+		if(endX > startX && endZ > startZ) {									// X+ Z+
+			for(int x = this.startX; x < this.endX; x ++) {
+				for(int z = this.startZ; z < this.endZ; z ++) {
+					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+						logBlock(bs, x, y, z);
+					}
+				}
+			}
+		} else if(endX > startX && endZ < startZ) {								// X+ Z-
+			for(int x = this.startX; x < this.endX; x ++) {
+				for(int z = this.startZ; z > this.endZ; z --) {
+					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+						logBlock(bs, x, y, z);
+					}
+				}
+			}
+		} else if(endX < startX && endZ < startZ) {								// X- Z-
+			for(int x = this.startX; x > this.endX; x --) {
+				for(int z = this.startZ; z > this.endZ; z --) {
+					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+						logBlock(bs, x, y, z);
+					}
+				}
+			}
+		} else if(endX < startX && endZ > startZ) {								// X- Z+
+			for(int x = this.startX; x > this.endX; x --) {
+				for(int z = this.startZ; z < this.endZ; z ++) {
+					for(int y = this.getPos().getY() + 1; y > 0; y --) {
+						logBlock(bs, x, y, z);
 					}
 				}
 			}
 		}
+		
 		blocks.clear();
 		Collections.reverse(bs);
 		blocks.addAll(bs);
 		bs.clear();
+	}
+	
+	private void logBlock(List<BlockPos> bs, int x, int y, int z) {
+		BlockPos p = new BlockPos(x, y, z);
+		IBlockState state = this.worldObj.getBlockState(p);
+		Block b = state.getBlock();
+		if(state.equals(null) || b.equals(Blocks.AIR) || b instanceof BlockLiquid || getHardness(p) < 0) { return; }
+		bs.add(p);
 	}
 	
 	public float getHardness(BlockPos pos) {

@@ -6,6 +6,7 @@ import com.cjburkey.mfrbc.gui.GuiHandler;
 import com.cjburkey.mfrbc.tile.TileEntityQuarry;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,6 +25,7 @@ public class BlockQuarry extends Block implements ITileEntityProvider {
 		super(Material.IRON);
 		
 		this.setHardness(1.0f);
+		this.setSoundType(SoundType.METAL);
 	}
 	
 	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
