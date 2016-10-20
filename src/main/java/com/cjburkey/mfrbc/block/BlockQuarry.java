@@ -1,11 +1,10 @@
 package com.cjburkey.mfrbc.block;
 
 import java.util.Random;
-import javax.annotation.Nullable;
 import com.cjburkey.mfrbc.MFRBC;
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.gui.GuiHandler;
 import com.cjburkey.mfrbc.tile.TileEntityQuarry;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -22,6 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,7 +43,9 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 	
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random r) {
-		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d, 0.0D, 0.0D, 0.0D, new int[0]);
+		for(int i = 0; i < r.nextInt(20); i ++) {
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d, 0.0D, 0.0D, 0.0D, new int[0]);
+		}
 	}
 	
 	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
@@ -106,7 +108,12 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 	
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer pl, EnumHand h, ItemStack stack, EnumFacing side, float x, float y, float z) {
 		if(!world.isRemote) {
-			pl.openGui(MFRBC.instance, GuiHandler.guiQuarry, world, pos.getX(), pos.getY(), pos.getZ());
+			if(!pl.isSneaking()) {
+				pl.openGui(MFRBC.instance, GuiHandler.guiQuarry, world, pos.getX(), pos.getY(), pos.getZ());
+			} else {
+				TileEntityQuarry te = (TileEntityQuarry) world.getTileEntity(pos);
+				Util.chat(pl, "Energy: " + te.getEnergyStored() + " RF of " + te.getCapacity() + " RF");
+			}
 		}
 		return true;
 	}

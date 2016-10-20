@@ -3,10 +3,11 @@ package com.cjburkey.mfrbc.tile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
-import com.cjburkey.mfrbc.MFRBC;
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc._Config;
+import com.cjburkey.mfrbc.block.BlockMarker;
+import com.cjburkey.mfrbc.block.BlockQuarry;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -24,9 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyReceiver, IInventory {
 	
@@ -38,6 +36,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	private int endX, endZ;
 	private boolean finished = false;
 	private boolean firstTick = true;
+	private int blocksPerRun;
 	
 	private int size = 16;
 	
@@ -48,25 +47,51 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public TileEntityQuarry() {
 		this.inventory = new ItemStack[this.getSizeInventory()];
 		this.clock = _Config.quarrySpeed;
+		this.blocksPerRun = _Config.quarryBlocksPerBreak;
 		
 		this.setEnergyStored(0);
 		this.setCapacity(_Config.quarryMaxEnergy);
 		this.maxReceive = _Config.quarryMaxReceive;
 	}
 	
+	public BlockPos getInFront() {
+		IBlockState state = this.worldObj.getBlockState(pos);
+		EnumFacing facing = state.getValue(BlockQuarry.FACING);
+		if(facing.equals(EnumFacing.NORTH)) {
+			return pos.south();
+		} else if(facing.equals(EnumFacing.SOUTH)) {
+			return pos.north();
+		} else if(facing.equals(EnumFacing.EAST)) {
+			return pos.west();
+		} else if(facing.equals(EnumFacing.WEST)) {
+			return pos.east();
+		}
+		return pos.north();
+	}
+	
 	public void findBounds() {
-		this.startX = this.getPos().getX() + 1;
-		this.startZ = this.getPos().getZ() + 1;
-		
-		this.endX = this.getPos().getX() + (size + 1);
-		this.endZ = this.getPos().getZ() + (size + 1);
+		BlockPos f = getInFront();
+		IBlockState s = this.worldObj.getBlockState(f);
+		if(s.getBlock() instanceof BlockMarker) {
+			TileEntityMarker m = (TileEntityMarker) this.worldObj.getTileEntity(f);
+			BlockPos[] starts = m.getMarkers();
+			if(starts[0] == null || starts[1] == null) {
+				Util.log("Missing quarry markers");
+			} else {
+				Util.log("Created quarry bounds.");
+				this.startX = starts[0].getX();
+				this.startX = starts[0].getZ();
+				this.endX = starts[1].getX();
+				this.endZ = starts[1].getZ();
+			}
+		}
 	}
 	
 	public void scan() {
 		List<BlockPos> bs = new ArrayList<BlockPos>();
 		findBounds();
 		
-		if(endX > startX && endZ > startZ) {			
+		if(endX > startX && endZ > startZ) {
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
 				for(int x = this.startX; x < this.endX; x ++) {
 					for(int z = this.startZ; z < this.endZ; z ++) {
@@ -128,8 +153,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 				clock --;
 				if(clock <= 0) {
 					clock = _Config.quarrySpeed;
-					if(done()) { scan(); if(done()) { finished = true; } }
-					if(!done() && shouldRun(getNextBlockPos(false))) { run(); }
+					for(int i = 0; i < this.blocksPerRun; i ++) {
+						if(done()) { scan(); if(done()) { finished = true; } }
+						if(!done() && shouldRun(getNextBlockPos(false))) { run(); }
+					}
 				}
 			}
 		}
@@ -174,11 +201,11 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	
 	public void run() {
 		BlockPos pos = getNextBlockPos(true);
+		this.energy -= getRfPrice(pos);
 		for(ItemStack i : getDrops(pos)) {
 			addStackToInv(i);
 		}
 		this.worldObj.destroyBlock(pos, false);
-		this.energy -= getRfPrice(pos);
 	}
 	
 	public boolean addStackToInv(ItemStack stack) {
