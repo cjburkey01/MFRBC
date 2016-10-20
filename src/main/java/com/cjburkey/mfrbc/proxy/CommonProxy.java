@@ -18,11 +18,11 @@ public class CommonProxy {
 		_Tabs.commonPreinit();
 		_Items.commonPreinit();
 		_Blocks.commonPreinit();
+		_Tiles.commonPreinit();
 		_Dict.commonPreinit();
 	}
 
 	public void init(FMLInitializationEvent e) {
-		_Tiles.commonInit();
 		_Recipes.commonInit();
 	}
 

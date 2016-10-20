@@ -108,8 +108,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public boolean shouldRun(BlockPos nextBlock) {
 		if(this.getEnergyStored() >= this.getRfPrice(nextBlock) && !isInventoryFull()) {
 			return true;
+		} else if(!isInventoryFull()) {
+			return !_Config.quarryRequireRf;
 		}
-		return true; //TODO: SET TO FALSE!!!!1!!11111!!11111111!1111111!11!!
+		return false;
 	}
 	
 	public int getRfPrice(BlockPos p) {
@@ -119,9 +121,11 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public boolean isInventoryFull() {
 		for(ItemStack i : this.inventory) {
 			if(i == null) {
+				MFRBC.log("Not full");
 				return false;
 			}
 		}
+		MFRBC.log("Full");
 		return true;
 	}
 	
@@ -133,8 +137,48 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	
 	public void run() {
 		BlockPos pos = getNextBlockPos(true);
+		for(ItemStack i : getDrops(pos)) {
+			addStackToInv(i);
+		}
 		this.worldObj.destroyBlock(pos, false);
-		MFRBC.log(pos);
+	}
+	
+	public boolean addStackToInv(ItemStack stack) {
+		for(int i = 0; i < this.inventory.length; i ++) {
+			ItemStack s = this.inventory[i];
+			if(s == null) {
+				inventory[i] = stack.copy();
+				return true;
+			} else {
+				if(s.getItem().equals(stack.getItem())) {
+					if(s.stackSize + stack.stackSize <= 64) {
+						inventory[i].stackSize += stack.stackSize;
+						return true;
+					} else {
+						int diff = stack.stackSize - (64 - inventory[i].stackSize);
+						inventory[i].stackSize = 64;
+						if(i + 1 < this.inventory.length) {
+							if(inventory[i + 1] != null) {
+								continue;
+							} else {
+								inventory[i + 1] = new ItemStack(stack.getItem(), diff);
+							}
+							return true;
+						}
+					}
+				} else {
+					if(i + 1 < this.inventory.length) {
+						if(inventory[i + 1] != null) {
+							continue;
+						} else {
+							inventory[i + 1] = stack.copy();
+						}
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	public String getCustomName() {
@@ -226,7 +270,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public void closeInventory(EntityPlayer player) {  }
 	
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
+		return false;
 	}
 	
 	public int getField(int id) {
