@@ -119,13 +119,12 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public boolean isInventoryFull() {
-		for(ItemStack i : this.inventory) {
-			if(i == null) {
-				MFRBC.log("Not full");
+		for(int i = 0; i < this.inventory.length; i ++) {
+			ItemStack is = this.getStackInSlot(i);
+			if(is == null) {
 				return false;
 			}
 		}
-		MFRBC.log("Full");
 		return true;
 	}
 	
@@ -145,7 +144,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	
 	public boolean addStackToInv(ItemStack stack) {
 		for(int i = 0; i < this.inventory.length; i ++) {
-			ItemStack s = this.inventory[i];
+			ItemStack s = this.getStackInSlot(i);
 			if(s == null) {
 				inventory[i] = stack.copy();
 				return true;
@@ -155,7 +154,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 						inventory[i].stackSize += stack.stackSize;
 						return true;
 					} else {
-						int diff = stack.stackSize - (64 - inventory[i].stackSize);
+						int diff = stack.stackSize - (64 - this.getStackInSlot(i).stackSize);
 						inventory[i].stackSize = 64;
 						if(i + 1 < this.inventory.length) {
 							if(inventory[i + 1] != null) {
@@ -202,7 +201,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public int getSizeInventory() {
-		return 27;
+		return 9;
 	}
 	
 	public ItemStack getStackInSlot(int index) {
@@ -310,7 +309,8 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			this.energy = 0;
 		}
 		nbt.setInteger("Energy", this.energy);
-		return nbt;
+		
+		return super.writeToNBT(nbt);
 	}
 	
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -329,6 +329,8 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		if (this.energy > this.capacity) {
 			this.energy = this.capacity;
 		}
+		
+		super.readFromNBT(nbt);
 	}
 
 	public void setCapacity(int capacity) {
