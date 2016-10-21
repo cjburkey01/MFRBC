@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper;
@@ -31,6 +32,12 @@ public class FluidUtilz {
 	
 	public static final boolean isFluid(World world, BlockPos pos) {
 		return getFluid(world, pos) != null;
+	}
+	
+	public static final int getBucket() { return FluidContainerRegistry.BUCKET_VOLUME; }
+	
+	public static final int bucketToMb(int buckets) {
+		return getBucket() * buckets;
 	}
 	
 }

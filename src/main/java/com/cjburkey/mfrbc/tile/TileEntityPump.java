@@ -2,6 +2,7 @@ package com.cjburkey.mfrbc.tile;
 
 import com.cjburkey.mfrbc._Config;
 import com.cjburkey.mfrbc.fluid.FluidTank;
+import com.cjburkey.mfrbc.fluid.FluidUtilz;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,15 +22,37 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	private int capacity;
 	private int energy;
 	private int maxReceive;
-	private int startClock = _Config.pumpSpeed;
-	private int clock = startClock;
+	private int startClock;
+	private int clock;
 	
 	public TileEntityPump() {
-		this.tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 100);
+		this.tank = new FluidTank(FluidUtilz.bucketToMb(100));
+		this.startClock = _Config.pumpSpeed;
+		this.clock = this.startClock;
 	}
 	
 	public void update() {
-		
+		if(!this.worldObj.isRemote) {
+			clock --;
+			if(clock <= 0) {
+				clock = startClock;
+				
+				if(canRun()) {
+					
+				}
+			}
+		}
+	}
+	
+	public boolean canRun() {
+		if(this.getEnergyStored() >= _Config.pumpRfPerOp && hasFluidRoom(1) && this.worldObj.isBlockIndirectlyGettingPowered(this.pos) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean hasFluidRoom(int buckets) {
+		return (this.tank.getFluidAmount() + FluidUtilz.bucketToMb(buckets) <= this.tank.getCapacity());
 	}
 	
 	// -- FLUID -- //
@@ -80,6 +103,43 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	}
 
 	public int getMaxEnergyStored(EnumFacing from) {
+		return this.capacity;
+	}
+	
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+		if (energy > capacity) {
+			energy = capacity;
+		}
+	}
+
+	public void setEnergyStored(int energy) {
+		this.energy = energy;
+		if (this.energy > this.capacity) {
+			this.energy = this.capacity;
+		} else if (this.energy < 0) {
+			this.energy = 0;
+		}
+	}
+
+	public void modifyEnergyStored(int energy) {
+		this.energy += energy;
+		if (this.energy > this.capacity) {
+			this.energy = this.capacity;
+		} else if (this.energy < 0) {
+			this.energy = 0;
+		}
+	}
+
+	public int extractEnergy(int maxExtract, boolean simulate) {
+		return 0;
+	}
+
+	public int getEnergyStored() {
+		return this.energy;
+	}
+
+	public int getCapacity() {
 		return this.capacity;
 	}
 	

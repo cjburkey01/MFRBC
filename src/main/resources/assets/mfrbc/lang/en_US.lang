@@ -13,6 +13,6 @@ tile.blockQuarry.name=Quarry
 tile.blockMarker.name=Position Marker
 tile.blockUpgrader.name=Upgrading Block
 tile.blockPump.name=Pump
-tile.blockPumpPipe.name=Pump Pipe(Decorative)
+tile.blockPumpPipe.name=Pump Pipe
 
 upgradeSpeed=Speed Upgrade
