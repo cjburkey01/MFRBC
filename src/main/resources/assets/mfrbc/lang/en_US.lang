@@ -12,5 +12,7 @@ tile.blockRefinedIronBlock.name=Refined Iron Block
 tile.blockQuarry.name=Quarry
 tile.blockMarker.name=Position Marker
 tile.blockUpgrader.name=Upgrading Block
+tile.blockPump.name=Pump
+tile.blockPumpPipe.name=Pump Pipe(Decorative)
 
 upgradeSpeed=Speed Upgrade

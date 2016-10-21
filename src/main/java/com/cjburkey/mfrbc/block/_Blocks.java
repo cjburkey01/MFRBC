@@ -20,22 +20,26 @@ public class _Blocks {
 	public static Block blockQuarry;
 	public static Block blockMarker;
 	public static Block blockUpgrader;
+	public static Block blockPump;
+	public static Block blockPumpPipe;
 	
 	public static final void commonPreinit() {
-		blockRefinedIronBlock = registerBlock("blockRefinedIronBlock", new Block(Material.IRON).setHardness(1.0f));
-		blockQuarry = registerBlock("blockQuarry", new BlockQuarry());
-		blockMarker = registerBlock("blockMarker", new BlockMarker());
-		blockUpgrader = registerBlock("blockUpgrader", new BlockUpgrader());
+		blockRefinedIronBlock = registerBlock("blockRefinedIronBlock", new Block(Material.IRON).setHardness(1.0f), false);
+		blockQuarry = registerBlock("blockQuarry", new BlockQuarry(), false);
+		blockMarker = registerBlock("blockMarker", new BlockMarker(), false);
+		blockUpgrader = registerBlock("blockUpgrader", new BlockUpgrader(), false);
+		blockPump = registerBlock("blockPump", new BlockPump(), false);
+		blockPumpPipe = registerBlock("blockPumpPipe", new BlockPumpPipe(), true);
 	}
 	
 	// -- Registry -- //
 	
-	private static final Block registerBlock(String n, Block b) {
+	private static final Block registerBlock(String n, Block b, boolean hide) {
 		ResourceLocation loc = new ResourceLocation(Info.id, n);
 		
 		b.setUnlocalizedName(n);
 		b.setRegistryName(loc);
-		b.setCreativeTab(_Tabs.tabBlocks);
+		if(!hide) b.setCreativeTab(_Tabs.tabBlocks);
 		
 		Item item = _Items.registerItem(n, new ItemBlock(b));
 		blocks.put(b, item);

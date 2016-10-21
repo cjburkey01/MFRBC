@@ -8,6 +8,8 @@ public class _Tiles {
 		GameRegistry.registerTileEntity(TileEntityQuarry.class, "tileEntityQuarry");
 		GameRegistry.registerTileEntity(TileEntityMarker.class, "tileEntityMarker");
 		GameRegistry.registerTileEntity(TileEntityUpgrader.class, "tileEntityUpgrader");
+		GameRegistry.registerTileEntity(TileEntityPump.class, "tileEntityPump");
+		GameRegistry.registerTileEntity(TileEntityPumpPipe.class, "tileEntityPumpPipe");
 	}
 	
 }

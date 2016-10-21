@@ -81,6 +81,10 @@ public class BlockMarker extends Block implements ITileEntityProvider {
 		return  new AxisAlignedBB(7f/16f, 0f/16f, 7f/16f, 9f/16f, 16f/16f, 9f/16f);
 	}
 	
+	public boolean isFullBlock(IBlockState state) {
+		return true;
+	}
+	
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
