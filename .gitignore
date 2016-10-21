@@ -26,4 +26,3 @@ hs_err_pid*
 *bin
 *.lock
 /run/*
-*cofh*
