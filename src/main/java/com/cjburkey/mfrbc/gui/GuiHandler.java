@@ -20,7 +20,7 @@ public class GuiHandler implements IGuiHandler {
 	
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		if(id == guiQuarry) {
-			return new GuiQuarry(player.inventory, (TileEntityQuarry) world.getTileEntity(new BlockPos(x, y, z)));
+			return new GuiQuarry(player, (TileEntityQuarry) world.getTileEntity(new BlockPos(x, y, z)));
 		}
 		return null;
 	}

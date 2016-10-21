@@ -54,6 +54,13 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		this.maxReceive = _Config.quarryMaxReceive;
 	}
 	
+	public boolean isWorking() {
+		if(!finished && !done() && shouldRun(getNextBlockPos(false))) {
+			return true;
+		}
+		return false;
+	}
+	
 	public BlockPos getInFront() {
 		IBlockState state = this.worldObj.getBlockState(pos);
 		EnumFacing facing = state.getValue(BlockQuarry.FACING);
@@ -180,7 +187,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public boolean shouldRun(BlockPos nextBlock) {
-		if(this.getEnergyStored() >= this.getRfPrice(nextBlock) && !isInventoryFull()) {
+		if(this.getEnergyStored() >= this.getRfPrice(nextBlock) && !isInventoryFull() && this.worldObj.isBlockIndirectlyGettingPowered(this.pos) > 0) {
 			return true;
 		} else if(!isInventoryFull()) {
 			return !_Config.quarryRequireRf;

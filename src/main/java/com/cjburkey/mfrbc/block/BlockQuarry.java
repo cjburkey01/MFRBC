@@ -130,12 +130,7 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 	
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer pl, EnumHand h, ItemStack stack, EnumFacing side, float x, float y, float z) {
 		if(!world.isRemote) {
-			if(!pl.isSneaking()) {
-				pl.openGui(MFRBC.instance, GuiHandler.guiQuarry, world, pos.getX(), pos.getY(), pos.getZ());
-			} else {
-				TileEntityQuarry te = (TileEntityQuarry) world.getTileEntity(pos);
-				Util.chat(pl, "Energy: " + te.getEnergyStored() + " RF of " + te.getCapacity() + " RF");
-			}
+			pl.openGui(MFRBC.instance, GuiHandler.guiQuarry, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
