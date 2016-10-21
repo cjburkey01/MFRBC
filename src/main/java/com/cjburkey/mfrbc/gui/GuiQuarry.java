@@ -50,6 +50,7 @@ public class GuiQuarry extends GuiContainer implements ToolTipRenderer {
 	}
 	
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
+		super.drawGuiContainerForegroundLayer(x, y);
 		String s = this.te.getDisplayName().getUnformattedText();
 		this.fontRendererObj.drawString(s, 88 - this.fontRendererObj.getStringWidth(s) / 2, 6, Integer.parseInt("404040", 16));
 		this.fontRendererObj.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, 72, Integer.parseInt("404040", 16));
@@ -62,7 +63,9 @@ public class GuiQuarry extends GuiContainer implements ToolTipRenderer {
 		float percent = ((float) energy / (float) maxEnergy);
 		int x = 23, y = 16, w = 20, h = 52;
 		
-		this.drawTexturedModalRect(x, y - (int) (percent * (float) h) + h, 0, 0, w, (int) (percent * (float) h + 1));
+		int fh = (int) (percent * (float) h) + 1;
+		int fy = y - (int) (percent * (float) h) + h;
+		this.drawTexturedModalRect(x, fy, 0, h - fh + 1, w, (percent == 0) ? 0 : fh);
 		
 		addToolTips(x, y, w, h);
 	}

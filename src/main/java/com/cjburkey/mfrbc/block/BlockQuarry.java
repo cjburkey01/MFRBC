@@ -33,7 +33,7 @@ public class BlockQuarry extends BlockDirectional implements ITileEntityProvider
 		super(Material.IRON);
 		
 		this.setHardness(1.0f);
-		this.setSoundType(SoundType.METAL);
+		this.setSoundType(SoundType.STONE);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setTickRandomly(true);
 	}

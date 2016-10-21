@@ -29,6 +29,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyReceiver, IInventory {
 	
 	private ItemStack[] inventory;
+	
 	private String customName;
 	private int clock;
 	private Stack<BlockPos> blocks = new Stack<BlockPos>();
@@ -37,8 +38,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	private int endX, endZ;
 	private boolean finished = false;
 	private int blocksPerRun;
-	
-	private int size = 16;
+	private String unloc;
 	
 	protected int energy;
 	protected int capacity;
@@ -52,7 +52,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		this.setEnergyStored(0);
 		this.setCapacity(_Config.quarryMaxEnergy);
 		this.maxReceive = _Config.quarryMaxReceive;
+		this.unloc = "tile.blockQuarry.name";
 	}
+	
+	// -- QUARRY -- //
 	
 	public boolean isWorking() {
 		if(!finished && !done() && shouldRun(getNextBlockPos(false))) {
@@ -76,6 +79,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		return pos.north();
 	}
 	
+	private boolean searched = false;
 	public boolean findBounds() {
 		BlockPos f = getInFront();
 		IBlockState s = this.worldObj.getBlockState(f);
@@ -83,7 +87,13 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			TileEntityMarker m = (TileEntityMarker) this.worldObj.getTileEntity(f);
 			BlockPos[] starts = m.getMarkers();
 			if(starts[0] == null || starts[1] == null) {
-				Util.log("Missing quarry markers");
+				if(!searched) {
+					searched = true;
+					m.search();
+					return findBounds();
+				} else {
+					Util.log("Missing quarry markers");
+				}
 			} else {
 				this.startX = starts[0].getX();
 				this.startZ = starts[0].getZ();
@@ -96,6 +106,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 				
 				this.markDirty();
 				Util.log("Created quarry bounds: (" + this.startX + ", " + this.startZ + ") to (" + this.endX + ", " + this.endZ + ")");
+				searched = false;
 				return true;
 			}
 		}
@@ -221,12 +232,6 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		return true;
 	}
 	
-	public List<ItemStack> getDrops(BlockPos pos) {
-		IBlockState state = this.worldObj.getBlockState(pos);
-		Block block = state.getBlock();
-		return block.getDrops(this.worldObj, pos, state, 0);
-	}
-	
 	public void run() {
 		BlockPos pos = getNextBlockPos(true);
 		this.energy -= getRfPrice(pos);
@@ -238,6 +243,14 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			addStackToInv(i);
 		}
 		this.worldObj.destroyBlock(p, false);
+	}
+	
+	// -- INVENTORY -- //
+	
+	public List<ItemStack> getDrops(BlockPos pos) {
+		IBlockState state = this.worldObj.getBlockState(pos);
+		Block block = state.getBlock();
+		return block.getDrops(this.worldObj, pos, state, 0);
 	}
 	
 	public boolean addStackToInv(ItemStack stack) {
@@ -287,7 +300,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public String getName() {
-		return this.hasCustomName() ? this.customName : "container.containerQuarry";
+		return this.hasCustomName() ? this.customName : this.unloc;
 	}
 	
 	public boolean hasCustomName() {
@@ -303,13 +316,13 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public ItemStack getStackInSlot(int index) {
-		if (index < 0 || index >= this.getSizeInventory())
-			return null;
+		if (index < 0 || index >= this.getSizeInventory()) return null;
+		
 		return this.inventory[index];
 	}
 	
 	public ItemStack decrStackSize(int index, int count) {
-		if (this.getStackInSlot(index) != null) {
+		if(this.getStackInSlot(index) != null) {
 			ItemStack itemstack;
 
 			if (this.getStackInSlot(index).stackSize <= count) {
@@ -342,8 +355,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	}
 	
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		if (index < 0 || index >= this.getSizeInventory())
-			return;
+		if(index < 0 || index >= this.getSizeInventory()) return;
 
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
 			stack.stackSize = this.getInventoryStackLimit();
@@ -366,16 +378,13 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public void openInventory(EntityPlayer player) {  }
 	public void closeInventory(EntityPlayer player) {  }
 	
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return false;
-	}
+	public boolean isItemValidForSlot(int index, ItemStack stack) { return false; }
 	
 	public int getField(int id) {
 		return 0;
 	}
 
-	public void setField(int id, int value) {
-	}
+	public void setField(int id, int value) {  }
 
 	public int getFieldCount() {
 		return 0;
@@ -386,60 +395,8 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			this.setInventorySlotContents(i, null);
 		}
 	}
-
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < this.getSizeInventory(); ++i) {
-			if (this.getStackInSlot(i) != null) {
-				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", (byte) i);
-				this.getStackInSlot(i).writeToNBT(stackTag);
-				list.appendTag(stackTag);
-			}
-		}
-		nbt.setTag("Items", list);
-
-		if (this.hasCustomName()) {
-			nbt.setString("CustomName", this.getCustomName());
-		}
-		
-		if (this.energy < 0) {
-			this.energy = 0;
-		}
-		nbt.setInteger("Energy", this.energy);
-		
-		nbt.setInteger("startX", this.startX);
-		nbt.setInteger("startZ", this.startZ);
-		nbt.setInteger("endX", this.endX);
-		nbt.setInteger("endZ", this.endZ);
-		
-		return super.writeToNBT(nbt);
-	}
 	
-	public void readFromNBT(NBTTagCompound nbt) {
-		NBTTagList list = nbt.getTagList("Items", 10);
-		for (int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound stackTag = list.getCompoundTagAt(i);
-			int slot = stackTag.getByte("Slot") & 255;
-			this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
-		}
-
-		if (nbt.hasKey("CustomName", 8)) {
-			this.setCustomName(nbt.getString("CustomName"));
-		}
-		
-		this.energy = nbt.getInteger("Energy");
-		if (this.energy > this.capacity) {
-			this.energy = this.capacity;
-		}
-		
-		this.startX = nbt.getInteger("startX");
-		this.startZ = nbt.getInteger("startZ");
-		this.endX = nbt.getInteger("endX");
-		this.endZ = nbt.getInteger("endZ");
-		
-		super.readFromNBT(nbt);
-	}
+	// -- ENERGY -- //
 
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
@@ -496,6 +453,62 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 
 	public int getMaxEnergyStored(EnumFacing from) {
 		return this.capacity;
+	}
+	
+	// -- NBT -- //
+	
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		NBTTagList list = new NBTTagList();
+		for (int i = 0; i < this.getSizeInventory(); ++i) {
+			if (this.getStackInSlot(i) != null) {
+				NBTTagCompound stackTag = new NBTTagCompound();
+				stackTag.setByte("Slot", (byte) i);
+				this.getStackInSlot(i).writeToNBT(stackTag);
+				list.appendTag(stackTag);
+			}
+		}
+		nbt.setTag("Items", list);
+
+		if (this.hasCustomName()) {
+			nbt.setString("CustomName", this.getCustomName());
+		}
+		
+		if (this.energy < 0) {
+			this.energy = 0;
+		}
+		nbt.setInteger("Energy", this.energy);
+		
+		nbt.setInteger("startX", this.startX);
+		nbt.setInteger("startZ", this.startZ);
+		nbt.setInteger("endX", this.endX);
+		nbt.setInteger("endZ", this.endZ);
+		
+		return super.writeToNBT(nbt);
+	}
+	
+	public void readFromNBT(NBTTagCompound nbt) {
+		NBTTagList list = nbt.getTagList("Items", 10);
+		for (int i = 0; i < list.tagCount(); ++i) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
+			int slot = stackTag.getByte("Slot") & 255;
+			this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
+		}
+
+		if (nbt.hasKey("CustomName", 8)) {
+			this.setCustomName(nbt.getString("CustomName"));
+		}
+		
+		this.energy = nbt.getInteger("Energy");
+		if (this.energy > this.capacity) {
+			this.energy = this.capacity;
+		}
+		
+		this.startX = nbt.getInteger("startX");
+		this.startZ = nbt.getInteger("startZ");
+		this.endX = nbt.getInteger("endX");
+		this.endZ = nbt.getInteger("endZ");
+		
+		super.readFromNBT(nbt);
 	}
 	
 }

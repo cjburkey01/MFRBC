@@ -1,61 +1,60 @@
 package com.cjburkey.mfrbc.container;
 
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.slot.SlotExitOnly;
 import com.cjburkey.mfrbc.slot.SlotUpgrade;
-import com.cjburkey.mfrbc.tile.TileEntityQuarry;
+import com.cjburkey.mfrbc.tile.TileEntityUpgrader;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerQuarry extends Container {
+public class ContainerUpgrader extends Container {
 	
-	private TileEntityQuarry te;
+	private TileEntityUpgrader te;
+	private int size = 1;
 	
-	public ContainerQuarry(IInventory inv, TileEntityQuarry te) {
+	public ContainerUpgrader(IInventory inv, TileEntityUpgrader te) {
 		this.te = te;
-		int i = 0;
 		
-		for(int y = 0; y < 3; ++y) {
-			for(int x = 0; x < 3; ++x) {
-				this.addSlotToContainer(new SlotExitOnly(te, i, 62 + x * 18, 17 + y * 18));
-				i ++;
-			}
-		}
+		this.addSlotToContainer(new SlotUpgrade(te, 0, 80, 35));
 		
-		for(int y = 0; y < 3; ++y) {
-			for(int x = 0; x < 9; ++x) {
+		for (int y = 0; y < 3; ++y) {
+			for (int x = 0; x < 9; ++x) {
+				int i = x + y * 9 + 9;
 				this.addSlotToContainer(new Slot(inv, i, 8 + x * 18, 84 + y * 18));
-				i ++;
 			}
 		}
-		
-		for(int x = 0; x < 9; ++x) {
-			this.addSlotToContainer(new Slot(inv, x, 8 + x * 18, 142));
+
+		for (int x = 0; x < 9; ++x) {
+			int i = x;
+			this.addSlotToContainer(new Slot(inv, i, 8 + x * 18, 142));
 		}
 	}
 	
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int fromSlot) {
 		ItemStack previous = null;
 		Slot slot = (Slot) this.inventorySlots.get(fromSlot);
-		if(slot != null && slot.getHasStack() && fromSlot < 9) {
+
+		if (slot != null && slot.getHasStack()) {
 			ItemStack current = slot.getStack();
 			previous = current.copy();
-			
-			if(!this.mergeItemStack(current, 9, 45, true)) {
-				return null;
-			}
-			
-			if(current.stackSize == 0) {
-				slot.putStack((ItemStack) null);
+
+			if (fromSlot < this.size) {
+				if (!this.mergeItemStack(current, this.size, 36, true))
+					return null;
 			} else {
-				slot.onSlotChanged();
+				if (!this.mergeItemStack(current, 0, this.size, false))
+					return null;
 			}
 			
-			if(current.stackSize == previous.stackSize) {
+			if (current.stackSize == 0)
+				slot.putStack((ItemStack) null);
+			else
+				slot.onSlotChanged();
+			if (current.stackSize == previous.stackSize)
 				return null;
-			}
 			slot.onPickupFromSlot(playerIn, current);
 		}
 		return previous;

@@ -6,9 +6,11 @@ item.itemRefinedIronNugget.name=Refined Iron Nugget
 item.itemWheelWood.name=Wooden Wheel
 item.itemCornerWood.name=Wooden Corner
 item.itemQuarryHead.name=Quarry Head
+item.itemUpgradeSpeed.name=Upgrade
 
 tile.blockRefinedIronBlock.name=Refined Iron Block
 tile.blockQuarry.name=Quarry
 tile.blockMarker.name=Position Marker
+tile.blockUpgrader.name=Upgrading Block
 
-container.containerQuarry=Quarry
+upgradeSpeed=Speed Upgrade

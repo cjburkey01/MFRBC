@@ -20,6 +20,8 @@ public class _Items {
 	public static Item itemWheelWood;
 	public static Item itemCornerWood;
 	public static Item itemQuarryHead;
+
+	public static Item itemUpgradeSpeed;
 	
 	public static final void commonPreinit() {
 		itemRefinedIron = registerItem("itemRefinedIron", new Item());
@@ -27,6 +29,8 @@ public class _Items {
 		itemWheelWood = registerItem("itemWheelWood", new Item());
 		itemCornerWood = registerItem("itemCornerWood", new Item());
 		itemQuarryHead = registerItem("itemQuarryHead", new Item());
+		
+		itemUpgradeSpeed = registerItem("itemUpgradeSpeed", new ItemUpgrade("upgradeSpeed"));
 	}
 
 	public static final void clientInit() {
