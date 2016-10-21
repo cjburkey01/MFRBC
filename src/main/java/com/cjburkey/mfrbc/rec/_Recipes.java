@@ -16,10 +16,12 @@ public class _Recipes {
 		// Items
 		addFurnace(new ItemStack(_Items.itemRefinedIron, 1), new ItemStack(Items.IRON_INGOT));
 
-		addFull(new ItemStack(_Items.itemRefinedIron, 1), new ItemStack(_Items.itemRefinedIronNugget, 1));
-		addShapeless(new ItemStack(_Items.itemRefinedIron, 9), new ItemStack(_Blocks.blockRefinedIronBlock, 1));
-		addShapeless(new ItemStack(_Items.itemRefinedIronNugget, 9), new ItemStack(_Items.itemRefinedIron, 1));
+		addFull(new ItemStack(_Items.itemRefinedIron, 1), _Items.itemRefinedIronNugget);
+		addShapeless(new ItemStack(_Items.itemRefinedIron, 9), _Blocks.blockRefinedIronBlock);
+		addShapeless(new ItemStack(_Items.itemRefinedIronNugget, 9), "ingotSteel");
 		add(new ItemStack(_Items.itemWheelWood, 1), new Object[] { " x ", "xyx", " x ", 'x', "plankWood", 'y', "stickWood" });
+		add(new ItemStack(_Items.itemQuarryHead, 1), new Object[] { "xyx", "xzx", "xax", 'x', "gemDiamond", 'y', "ingotSteel", 'z', "plankWood", 'a', "dustRedstone" });
+		add(new ItemStack(_Items.itemCornerWood, 1), new Object[] { "xx", " x", 'x', Blocks.WOODEN_BUTTON });
 		
 		// Blocks
 		addFull(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new ItemStack(_Items.itemRefinedIron, 1));
@@ -38,8 +40,8 @@ public class _Recipes {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(out, rec));
 	}
 	
-	private static final void addFull(ItemStack out, ItemStack in) {
-		add(out, new Object[] { "xxx", "xxx", "xxx", 'x', in.getItem() });
+	private static final void addFull(ItemStack out, Object in) {
+		add(out, new Object[] { "xxx", "xxx", "xxx", 'x', in });
 	}
 	
 	private static final void addFurnace(ItemStack out, ItemStack in) {

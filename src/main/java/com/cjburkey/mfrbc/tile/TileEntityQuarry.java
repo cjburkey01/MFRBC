@@ -32,10 +32,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	private String customName;
 	private int clock;
 	private Stack<BlockPos> blocks = new Stack<BlockPos>();
+	private boolean firstTick = true;
 	private int startX, startZ;
 	private int endX, endZ;
 	private boolean finished = false;
-	private boolean firstTick = true;
 	private int blocksPerRun;
 	
 	private int size = 16;
@@ -76,7 +76,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		return pos.north();
 	}
 	
-	public void findBounds() {
+	public boolean findBounds() {
 		BlockPos f = getInFront();
 		IBlockState s = this.worldObj.getBlockState(f);
 		if(s.getBlock() instanceof BlockMarker) {
@@ -89,15 +89,23 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 				this.startZ = starts[0].getZ();
 				this.endX = starts[1].getX();
 				this.endZ = starts[1].getZ();
+				
+				mine(f);
+				mine(starts[0]);
+				mine(starts[1]);
+				
 				this.markDirty();
 				Util.log("Created quarry bounds: (" + this.startX + ", " + this.startZ + ") to (" + this.endX + ", " + this.endZ + ")");
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public void scan() {
+		long s = System.nanoTime();
+		Util.log("Quarry Scan Start: " + s);
 		List<BlockPos> bs = new ArrayList<BlockPos>();
-		findBounds();
 		
 		if(endX > startX && endZ > startZ) {
 			for(int y = this.getPos().getY() + 1; y > 0; y --) {
@@ -145,6 +153,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 		Collections.reverse(bs);
 		blocks.addAll(bs);
 		bs.clear();
+		
+		long d = System.nanoTime();
+		Util.log("Quarry Scan Stop: " + d);
+		Util.log("Time Taken: " + (((float) (d - s)) / 1000f) + " microseconds");
 	}
 	
 	private void logBlock(List<BlockPos> bs, int x, int y, int z) {
@@ -163,8 +175,8 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	
 	public void update() {
 		if(!this.worldObj.isRemote) {
-			if(firstTick) { firstTick = false; scan(); }
-
+			if(done() && firstTick) { firstTick = false; scan(); }
+			
 			if(!finished) {
 				clock --;
 				if(clock <= 0) {
@@ -218,10 +230,14 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	public void run() {
 		BlockPos pos = getNextBlockPos(true);
 		this.energy -= getRfPrice(pos);
-		for(ItemStack i : getDrops(pos)) {
+		mine(pos);
+	}
+	
+	public void mine(BlockPos p) {
+		for(ItemStack i : getDrops(p)) {
 			addStackToInv(i);
 		}
-		this.worldObj.destroyBlock(pos, false);
+		this.worldObj.destroyBlock(p, false);
 	}
 	
 	public boolean addStackToInv(ItemStack stack) {
