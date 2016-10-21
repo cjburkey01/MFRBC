@@ -5,11 +5,11 @@
   "description": "A replacement mod for MineFactory Reloaded and Buildcraft.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "logo.png",
-  "updateUrl": "",
-  "authorList": ["CJ Burkey"],
-  "credits": "The Forge and FML guys, for making forge.",
-  "logoFile": "",
+  "url": "https://minecraft.curseforge.com/projects/mfrbc",
+  "updateUrl": "https://minecraft.curseforge.com/projects/mfrbc/files",
+  "authorList": ["CJ Burkey", "Sammystonespy"],
+  "credits": "The Forge and FML guys, for making forge.  Sammystonespy for graphical and functional design.",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []
 }

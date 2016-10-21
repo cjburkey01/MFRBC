@@ -8,6 +8,8 @@ import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc._Config;
 import com.cjburkey.mfrbc.block.BlockMarker;
 import com.cjburkey.mfrbc.block.BlockQuarry;
+import com.cjburkey.mfrbc.block.BlockUpgrader;
+import com.cjburkey.mfrbc.item._Items;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -15,6 +17,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -29,7 +32,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyReceiver, IInventory {
 	
 	private ItemStack[] inventory;
-	
 	private String customName;
 	private int clock;
 	private Stack<BlockPos> blocks = new Stack<BlockPos>();
@@ -39,6 +41,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	private boolean finished = false;
 	private int blocksPerRun;
 	private String unloc;
+	private int speed;
 	
 	protected int energy;
 	protected int capacity;
@@ -46,7 +49,8 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 	
 	public TileEntityQuarry() {
 		this.inventory = new ItemStack[this.getSizeInventory()];
-		this.clock = _Config.quarrySpeed;
+		this.speed = _Config.quarrySpeed;
+		this.clock = this.speed;
 		this.blocksPerRun = _Config.quarryBlocksPerBreak;
 		
 		this.setEnergyStored(0);
@@ -189,9 +193,10 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			if(done() && firstTick) { firstTick = false; scan(); }
 			
 			if(!finished) {
+				this.blocksPerRun = 1 + (int) Math.floor((float) getUpgradeCount(_Items.itemUpgradeSpeed) / 1.5f);
 				clock --;
 				if(clock <= 0) {
-					clock = _Config.quarrySpeed;
+					this.clock = this.speed;
 					for(int i = 0; i < this.blocksPerRun; i ++) {
 						if(done()) { scan(); if(done()) { finished = true; } }
 						if(!done() && shouldRun(getNextBlockPos(false))) { run(); }
@@ -243,6 +248,45 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			addStackToInv(i);
 		}
 		this.worldObj.destroyBlock(p, false);
+	}
+	
+	public int getUpgradeCount(Item upgradeItem) {
+		int amt = 0;
+		
+		BlockPos up = this.pos.up();
+		BlockPos down = this.pos.down();
+		BlockPos west = this.pos.west();
+		BlockPos east = this.pos.east();
+		BlockPos north = this.pos.north();
+		BlockPos south = this.pos.south();
+		
+		ItemStack u = getUpgrade(up);
+		ItemStack d = getUpgrade(down);
+		ItemStack w = getUpgrade(west);
+		ItemStack e = getUpgrade(east);
+		ItemStack n = getUpgrade(north);
+		ItemStack s = getUpgrade(south);
+		
+		if(u != null && u.getItem().equals(upgradeItem)) { amt ++; }
+		if(d != null && d.getItem().equals(upgradeItem)) { amt ++; }
+		if(w != null && w.getItem().equals(upgradeItem)) { amt ++; }
+		if(e != null && e.getItem().equals(upgradeItem)) { amt ++; }
+		if(n != null && n.getItem().equals(upgradeItem)) { amt ++; }
+		if(s != null && s.getItem().equals(upgradeItem)) { amt ++; }
+		
+		return amt;
+	}
+	
+	public ItemStack getUpgrade(BlockPos p) {
+		IBlockState s = this.worldObj.getBlockState(p);
+		if(s.getBlock() instanceof BlockUpgrader) {
+			TileEntity e = this.worldObj.getTileEntity(p);
+			if(e != null) {
+				TileEntityUpgrader te = (TileEntityUpgrader) e;
+				return te.getStackInSlot(0);
+			}
+		}
+		return null;
 	}
 	
 	// -- INVENTORY -- //

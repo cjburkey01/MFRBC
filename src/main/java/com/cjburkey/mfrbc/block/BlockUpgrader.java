@@ -2,7 +2,6 @@ package com.cjburkey.mfrbc.block;
 
 import com.cjburkey.mfrbc.MFRBC;
 import com.cjburkey.mfrbc.gui.GuiHandler;
-import com.cjburkey.mfrbc.tile.TileEntityQuarry;
 import com.cjburkey.mfrbc.tile.TileEntityUpgrader;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -36,7 +35,7 @@ public class BlockUpgrader extends Block implements ITileEntityProvider {
 	
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack stack) {
 		if(!world.isRemote) {
-			TileEntityQuarry te = (TileEntityQuarry) world.getTileEntity(pos);
+			TileEntityUpgrader te = (TileEntityUpgrader) world.getTileEntity(pos);
 			if(stack.hasDisplayName()) {
 				te.setCustomName(stack.getDisplayName());
 			}
