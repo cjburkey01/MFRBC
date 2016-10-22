@@ -23,7 +23,7 @@ public class FluidTank implements IFluidTank {
 	}
 
 	public int getFluidAmount() {
-		return this.getFluid().amount;
+		return (this.getFluid() != null) ? this.getFluid().amount : 0;
 	}
 
 	public int getCapacity() {

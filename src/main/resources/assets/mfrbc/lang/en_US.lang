@@ -16,3 +16,5 @@ tile.blockPump.name=Pump
 tile.blockPumpPipe.name=Pump Pipe
 
 upgradeSpeed=Speed Upgrade
+
+noFluid=No Fluid

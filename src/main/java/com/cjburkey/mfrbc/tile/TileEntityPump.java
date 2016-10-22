@@ -1,15 +1,22 @@
 package com.cjburkey.mfrbc.tile;
 
 import com.cjburkey.mfrbc._Config;
+import com.cjburkey.mfrbc.block.BlockPumpPipe;
+import com.cjburkey.mfrbc.block._Blocks;
 import com.cjburkey.mfrbc.fluid.FluidTank;
 import com.cjburkey.mfrbc.fluid.FluidUtilz;
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -26,9 +33,16 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	private int clock;
 	
 	public TileEntityPump() {
-		this.tank = new FluidTank(FluidUtilz.bucketToMb(100));
+		this.tank = new FluidTank(FluidUtilz.bucketToMb(_Config.pumpBuckets));
 		this.startClock = _Config.pumpSpeed;
 		this.clock = this.startClock;
+		this.energy = 0;
+		this.capacity = _Config.pumpMaxEnergy;
+		this.maxReceive = _Config.pumpMaxReceive;
+	}
+	
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation("tile.blockPump.name");
 	}
 	
 	public void update() {
@@ -36,9 +50,9 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 			clock --;
 			if(clock <= 0) {
 				clock = startClock;
-				
 				if(canRun()) {
-					
+					TileEntityPumpPipe p = pumpPipeBelow(this.worldObj, this.pos);
+					p.run();
 				}
 			}
 		}
@@ -56,6 +70,14 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	}
 	
 	// -- FLUID -- //
+	
+	public FluidStack getFluid() {
+		return this.tank.getFluid();
+	}
+	
+	public int getTankCap() {
+		return this.tank.getCapacity();
+	}
 	
 	public int fill(EnumFacing from, FluidStack r, boolean doFill) {
 		return this.tank.fill(r, doFill);
@@ -131,10 +153,6 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 		}
 	}
 
-	public int extractEnergy(int maxExtract, boolean simulate) {
-		return 0;
-	}
-
 	public int getEnergyStored() {
 		return this.energy;
 	}
@@ -145,7 +163,34 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	
 	// -- TE -- //
 	
-	public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); }
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return super.writeToNBT(nbt); }
+	public void readFromNBT(NBTTagCompound nbt) {
+		this.tank = this.tank.readFromNBT(nbt);
+		super.readFromNBT(nbt);
+	}
+	
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtt) {
+		NBTTagCompound nbt = this.tank.writeToNBT(nbtt);
+		return super.writeToNBT(nbt);
+	}
+	
+	public static TileEntityPumpPipe pumpPipeBelow(World w, BlockPos po) {
+		TileEntityPumpPipe p = pipeBelow(w, po);
+		if(p == null) w.setBlockState(po.down(), _Blocks.blockPumpPipe.getDefaultState());
+		p = pipeBelow(w, po);
+		return p;
+	}
+	
+	public static final TileEntityPumpPipe pipeBelow(World world, BlockPos p) {
+		BlockPos b = p.down();
+		IBlockState state = world.getBlockState(b);
+		if(state.getBlock() instanceof BlockPumpPipe) {
+			return (TileEntityPumpPipe) world.getTileEntity(b);
+		}
+		return null;
+	}
+	
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return this.worldObj.getTileEntity(this.getPos()) == this && player.getDistanceSq(this.pos.add(0.5, 0.5, 0.5)) <= 64;
+	}
 	
 }

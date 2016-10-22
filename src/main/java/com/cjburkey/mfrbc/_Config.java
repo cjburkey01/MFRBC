@@ -9,7 +9,7 @@ public class _Config {
 	public static int quarryMaxEnergy, quarryMaxReceive, quarrySpeed, quarryRfPerOp, quarryBlocksPerBreak, quarryMaxSize;
 	public static boolean quarryRequireRf;
 	
-	public static int pumpMaxEnergy, pumpMaxReceive, pumpSpeed, pumpRfPerOp, pumpSize;
+	public static int pumpMaxEnergy, pumpMaxReceive, pumpSpeed, pumpRfPerOp, pumpSize, pumpBuckets;
 	public static boolean pumpRequireRf;
 	
 	public static final void commonPreinit(FMLPreInitializationEvent e) {
@@ -31,6 +31,7 @@ public class _Config {
 		pumpSpeed = c.getInt("pumpSpeed", "pump", 5, 2, 100, "Number of game ticks(20 t/s) between operations.");
 		pumpRfPerOp = c.getInt("pumpRfPerOp", "pump", 150, 100, 10000, "Amount of RF taken per fluid source.");
 		pumpSize = c.getInt("pumpSize", "pump", 64, 15, 128, "The diameter of the pump's influence.");
+		pumpBuckets = c.getInt("pumpBuckets", "pump", 100, 10, 10000, "The maximum number of buckets the quarry can hold.  DON'T USE MILIBUCKETS HERE!!");
 		pumpRequireRf = c.getBoolean("pumpRequireRf", "pump", true, "Whether or not the pump needs power to function.");
 		
 		c.save();

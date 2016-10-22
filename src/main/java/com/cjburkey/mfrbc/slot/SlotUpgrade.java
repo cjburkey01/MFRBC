@@ -13,7 +13,6 @@ public class SlotUpgrade extends Slot {
 	
 	public boolean isItemValid(ItemStack stack) {
 		return stack.getItem() instanceof ItemUpgrade;
-		//return false;
 	}
 	
 }

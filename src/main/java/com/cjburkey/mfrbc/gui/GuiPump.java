@@ -4,31 +4,33 @@ import java.awt.Rectangle;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import com.cjburkey.mfrbc.container.ContainerQuarry;
+import com.cjburkey.mfrbc.container.ContainerPump;
 import com.cjburkey.mfrbc.gui.ToolTipManager.ToolTipRenderer;
+import com.cjburkey.mfrbc.packet.PacketPumpToServer;
 import com.cjburkey.mfrbc.packet.PacketQuarryToServer;
 import com.cjburkey.mfrbc.packet._Packets;
-import com.cjburkey.mfrbc.tile.TileEntityQuarry;
+import com.cjburkey.mfrbc.tile.TileEntityPump;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 
-public class GuiQuarry extends GuiContainer implements ToolTipRenderer {
+public class GuiPump extends GuiContainer implements ToolTipRenderer {
 	
 	protected ToolTipManager ttm = new ToolTipManager();
 	protected NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
 	
 	private IInventory playerInv;
-	private TileEntityQuarry te;
+	private TileEntityPump te;
 	
-	public static int energy, maxEnergy;
-	public static boolean working;
+	public static int energy, maxEnergy, fluid, maxFluid;
+	public static String fluidName;
 
-	public GuiQuarry(EntityPlayer p, TileEntityQuarry te) {
-		super(new ContainerQuarry(p.inventory, te));
+	public GuiPump(EntityPlayer p, TileEntityPump te) {
+		super(new ContainerPump(p.inventory, te));
 		
 		this.playerInv = p.inventory;
 		this.te = te;
@@ -43,9 +45,9 @@ public class GuiQuarry extends GuiContainer implements ToolTipRenderer {
 	}
 	
 	protected void drawGuiContainerBackgroundLayer(float ticks, int x, int y) {
-		_Packets.getNetwork().sendToServer(new PacketQuarryToServer(te.getPos()));
+		_Packets.getNetwork().sendToServer(new PacketPumpToServer(te.getPos()));
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.getTextureManager().bindTexture(new ResourceLocation("mfrbc:textures/gui/guiQuarry.png"));
+		this.mc.getTextureManager().bindTexture(new ResourceLocation("mfrbc:textures/gui/guiPump.png"));
 		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 	}
 	
@@ -53,28 +55,29 @@ public class GuiQuarry extends GuiContainer implements ToolTipRenderer {
 		super.drawGuiContainerForegroundLayer(x, y);
 		String s = this.te.getDisplayName().getUnformattedText();
 		this.fontRendererObj.drawString(s, 88 - this.fontRendererObj.getStringWidth(s) / 2, 6, Integer.parseInt("404040", 16));
-		this.fontRendererObj.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, 72, Integer.parseInt("404040", 16));
-		drawEnergyBar();
+		
+		ttm.clear();
+		drawEnergyBar(23, 16, 42, 150);
+		drawFluidBar(133, 16, 152, 150);
 	}
 	
-	private void drawEnergyBar() {
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.getTextureManager().bindTexture(new ResourceLocation("mfrbc:textures/gui/guiBar.png"));
-		float percent = ((float) energy / (float) maxEnergy);
-		int x = 23, y = 16, w = 20, h = 52;
+	private void drawEnergyBar(int startX, int startY, int endX, int endY) {
+		GuiHelper.drawProgressBar(this, startX, startY, endX, endY, this.energy, this.maxEnergy);
 		
-		int fh = (int) (percent * (float) h) + 1;
-		int fy = y - (int) (percent * (float) h) + h;
-		this.drawTexturedModalRect(x, fy, 0, h - fh + 1, w, (percent == 0) ? 0 : fh);
-		
-		addToolTips(x, y, w, h);
-	}
-	
-	private void addToolTips(int x, int y, int w, int h) {
 		String e = nf.format(this.energy);
 		String m = nf.format(this.maxEnergy);
-		ttm.clear();
-		ttm.addToolTip(new GuiToolTip(new Rectangle(x, y, w, h), "Energy", e + "RF / " + m + "RF"));
+		int w = endX - startX + 1, h = endY - startY;
+		ttm.addToolTip(new GuiToolTip(new Rectangle(startX, startY, w, h), "Energy", e + "RF / " + m + "RF"));
+	}
+	
+	private void drawFluidBar(int startX, int startY, int endX, int endY) {
+		GuiHelper.drawProgressBar(this, startX, startY, endX, endY, this.fluid, this.maxFluid, "mfrbc:textures/gui/guiFluidBar.png");
+		
+		String i = nf.format(this.fluid);
+		String o = nf.format(this.maxFluid);
+		String n = (fluidName == null || fluidName.trim().equals("null") || fluidName.isEmpty()) ? I18n.translateToLocal("noFluid") : fluidName;
+		int w = endX - startX + 1, h = endY - startY;
+		ttm.addToolTip(new GuiToolTip(new Rectangle(startX, startY, w, h), n, i + "mB / " + o + "mB"));
 	}
 
 	public int getGuiLeft() {
