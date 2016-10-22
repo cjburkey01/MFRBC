@@ -7,6 +7,7 @@ import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.tab._Tabs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -21,6 +22,7 @@ public class _Items {
 	public static Item itemCornerWood;
 	public static Item itemQuarryHead;
 
+	public static Item itemUpgradeBase;
 	public static Item itemUpgradeSpeed;
 	
 	public static final void commonPreinit() {
@@ -29,8 +31,9 @@ public class _Items {
 		itemWheelWood = registerItem("itemWheelWood", new Item());
 		itemCornerWood = registerItem("itemCornerWood", new Item());
 		itemQuarryHead = registerItem("itemQuarryHead", new Item());
-		
-		itemUpgradeSpeed = registerItem("itemUpgradeSpeed", new ItemUpgrade("upgradeSpeed"));
+
+		itemUpgradeBase = registerItem("itemUpgradeBase", new Item(), _Tabs.tabUps);
+		itemUpgradeSpeed = registerItem("itemUpgradeSpeed", new ItemUpgrade("upgradeSpeed"), _Tabs.tabUps);
 	}
 
 	public static final void clientInit() {
@@ -43,17 +46,21 @@ public class _Items {
 	
 	// -- Registry -- //
 	
-	public static final Item registerItem(String n, Item i) {
+	public static final Item registerItem(String n, Item i, CreativeTabs c) {
 		ResourceLocation loc = new ResourceLocation(Info.id, n);
 		
 		i.setUnlocalizedName(n);
 		i.setRegistryName(loc);
-		i.setCreativeTab(_Tabs.tabItems);
+		i.setCreativeTab(c);
 		items.add(i);
 		
 		GameRegistry.register(i);
 		Util.log("Registered item: '" + n + "'");
 		return i;
+	}
+	
+	public static final Item registerItem(String n, Item i) {
+		return registerItem(n, i, _Tabs.tabItems);
 	}
 	
 }

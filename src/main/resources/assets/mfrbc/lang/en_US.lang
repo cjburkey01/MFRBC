@@ -1,4 +1,5 @@
 itemGroup.mfrbcTabItems=MFRBC Items
+itemGroup.mfrbcTabUps=MFRBC Upgrades
 itemGroup.mfrbcTabBlocks=MFRBC Blocks
 
 item.itemRefinedIron.name=Refined Iron
@@ -6,6 +7,7 @@ item.itemRefinedIronNugget.name=Refined Iron Nugget
 item.itemWheelWood.name=Wooden Wheel
 item.itemCornerWood.name=Wooden Corner
 item.itemQuarryHead.name=Quarry Head
+item.itemUpgradeBase.name=Upgrade Base
 item.itemUpgradeSpeed.name=Upgrade
 
 tile.blockRefinedIronBlock.name=Refined Iron Block

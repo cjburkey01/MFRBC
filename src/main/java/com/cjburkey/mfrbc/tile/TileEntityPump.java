@@ -8,6 +8,8 @@ import com.cjburkey.mfrbc.fluid.FluidTank;
 import com.cjburkey.mfrbc.fluid.FluidUtilz;
 import com.cjburkey.mfrbc.item._Items;
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidHandler;
 
 @SuppressWarnings("deprecation")
@@ -181,7 +184,9 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	
 	public static TileEntityPumpPipe pumpPipeBelow(World w, BlockPos po) {
 		TileEntityPumpPipe p = pipeBelow(w, po);
-		if(p == null && (FluidUtilz.isFluid(w, po.down()) || w.isAirBlock(po.down()))) w.setBlockState(po.down(), _Blocks.blockPumpPipe.getDefaultState());
+		Block b = w.getBlockState(po).getBlock();
+		if(p == null && (FluidUtilz.isFluid(w, po.down()) || b instanceof BlockLiquid || b instanceof IFluidBlock || w.isAirBlock(po.down())))
+			w.setBlockState(po.down(), _Blocks.blockPumpPipe.getDefaultState());
 		p = pipeBelow(w, po);
 		return p;
 	}

@@ -1,5 +1,6 @@
 package com.cjburkey.mfrbc.proxy;
 
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc._Config;
 import com.cjburkey.mfrbc.block._Blocks;
 import com.cjburkey.mfrbc.item._Items;
@@ -22,12 +23,18 @@ public class CommonProxy {
 		_Blocks.commonPreinit();
 		_Tiles.commonPreinit();
 		_Dict.commonPreinit();
+		
+		Util.log("Preinit");
 	}
 
 	public void init(FMLInitializationEvent e) {
 		_Recipes.commonInit();
+		
+		Util.log("Init");
 	}
 
-	public void postinit(FMLPostInitializationEvent e) {  }
+	public void postinit(FMLPostInitializationEvent e) {
+		Util.log("Postinit");
+	}
 	
 }

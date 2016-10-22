@@ -10,10 +10,12 @@ import net.minecraft.item.Item;
 public class _Tabs {
 	
 	public static CreativeTabs tabItems;
+	public static CreativeTabs tabUps;
 	public static CreativeTabs tabBlocks;
 	
 	public static final void commonPreinit() {
 		tabItems = new CreativeTabs("mfrbcTabItems") { public Item getTabIconItem() { return _Items.itemRefinedIron; } };
+		tabUps = new CreativeTabs("mfrbcTabUps") { public Item getTabIconItem() { return _Items.itemUpgradeBase; } };
 		tabBlocks = new CreativeTabs("mfrbcTabBlocks") { public Item getTabIconItem() { return Item.getItemFromBlock(_Blocks.blockRefinedIronBlock); } };
 	}
 	

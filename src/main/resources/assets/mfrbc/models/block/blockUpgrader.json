@@ -1,6 +1,12 @@
 {
-    "parent": "block/cube_all",
+    "parent": "block/cube",
     "textures": {
-        "all": "mfrbc:blocks/blockUpgrader"
+        "particle": "mfrbc:blocks/blockUpgrader_side",
+        "up": "mfrbc:blocks/blockRefinedIronBlock",
+        "down": "mfrbc:blocks/blockRefinedIronBlock",
+        "north": "mfrbc:blocks/blockUpgrader_side",
+        "east": "mfrbc:blocks/blockUpgrader_side",
+        "south": "mfrbc:blocks/blockUpgrader_side",
+        "west": "mfrbc:blocks/blockUpgrader_side"
     }
 }

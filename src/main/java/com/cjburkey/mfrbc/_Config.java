@@ -28,7 +28,7 @@ public class _Config {
 		// -- PUMP -- //
 		pumpMaxEnergy = c.getInt("pumpMaxEnergy", "pump", 5000, 1000, 1000000, "The maximum energy the pump can hold.");
 		pumpMaxReceive = c.getInt("pumpMaxReceive", "pump", 1000000, 250, 1000000000, "The maximum energy the pump can receive per tick.");
-		pumpSpeed = c.getInt("pumpSpeed", "pump", 5, 2, 100, "Number of game ticks(20 t/s) between operations.");
+		pumpSpeed = c.getInt("pumpSpeed", "pump", 15, 5, 100, "Number of game ticks(20 t/s) between operations.");
 		pumpRfPerOp = c.getInt("pumpRfPerOp", "pump", 150, 100, 10000, "Amount of RF taken per fluid source.");
 		pumpSize = c.getInt("pumpSize", "pump", 64, 15, 128, "The diameter of the pump's influence.");
 		pumpBuckets = c.getInt("pumpBuckets", "pump", 100, 10, 10000, "The maximum number of buckets the quarry can hold.  DON'T USE MILIBUCKETS HERE!!");

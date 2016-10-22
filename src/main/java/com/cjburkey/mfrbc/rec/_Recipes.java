@@ -22,14 +22,17 @@ public class _Recipes {
 		add(new ItemStack(_Items.itemWheelWood, 1), new Object[] { " x ", "xyx", " x ", 'x', "plankWood", 'y', "stickWood" });
 		add(new ItemStack(_Items.itemQuarryHead, 1), new Object[] { "xyx", "xzx", "xax", 'x', "gemDiamond", 'y', "ingotSteel", 'z', "plankWood", 'a', "dustRedstone" });
 		add(new ItemStack(_Items.itemCornerWood, 1), new Object[] { "xx", " x", 'x', Blocks.WOODEN_BUTTON });
-		add(new ItemStack(_Items.itemUpgradeSpeed, 1), new Object[] { "xxx", "yzy", "aba", 'x', "dustRedstone", 'y', "gemDiamond", 'z', "blockSteel", 'a', "plankWood", 'b', "ingotSteel" });
+		add(new ItemStack(_Items.itemUpgradeBase, 1), new Object[] { "xxx", "yzy", "aba", 'x', "dustRedstone", 'y', "gemDiamond", 'z', "blockSteel", 'a', "plankWood", 'b', "ingotSteel" });
+		add(new ItemStack(_Items.itemUpgradeSpeed, 1), new Object[] { "xxx", "yzy", "aba",
+				'x', "dustRedstone", 'y', "gemDiamond", 'z', _Items.itemUpgradeBase, 'a', Items.SUGAR, 'b', "ingotSteel" });
 		
 		// Blocks
 		addFull(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new ItemStack(_Items.itemRefinedIron, 1));
 		add(new ItemStack(_Blocks.blockMarker, 1), new Object[] { "x", "y", "x", 'x', "dyeBlue", 'y', new ItemStack(Blocks.TORCH, 1) });
 		add(new ItemStack(_Blocks.blockPumpPipe, 4), new Object[] { "x", "x", "x", 'x', "ingotSteel" });
+		add(new ItemStack(_Blocks.blockUpgrader, 1), new Object[] { " x ", "xyx", " x ", 'x', _Items.itemUpgradeBase, 'y', _Blocks.blockRefinedIronBlock });
 		add(new ItemStack(_Blocks.blockQuarry, 1), new Object[] { "xyx", "zaz", "xbx",
-				'x', _Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', Blocks.STONE, 'a', "blockSteel", 'b', _Items.itemQuarryHead });
+				'x', _Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', "stone", 'a', "blockSteel", 'b', _Items.itemQuarryHead });
 		add(new ItemStack(_Blocks.blockPump, 1), new Object[] { "xyx", "aba", "xzx",
 				'x',_Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', _Blocks.blockPumpPipe, 'a', "cobblestone", 'b', "blockSteel" });
 	}
