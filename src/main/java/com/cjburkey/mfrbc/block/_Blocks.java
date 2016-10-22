@@ -29,7 +29,7 @@ public class _Blocks {
 		blockMarker = registerBlock("blockMarker", new BlockMarker(), false);
 		blockUpgrader = registerBlock("blockUpgrader", new BlockUpgrader(), false);
 		blockPump = registerBlock("blockPump", new BlockPump(), false);
-		blockPumpPipe = registerBlock("blockPumpPipe", new BlockPumpPipe(), true);
+		blockPumpPipe = registerBlock("blockPumpPipe", new BlockPumpPipe(), false);
 	}
 	
 	// -- Registry -- //

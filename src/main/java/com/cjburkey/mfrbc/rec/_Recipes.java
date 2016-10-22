@@ -27,8 +27,11 @@ public class _Recipes {
 		// Blocks
 		addFull(new ItemStack(_Blocks.blockRefinedIronBlock, 1), new ItemStack(_Items.itemRefinedIron, 1));
 		add(new ItemStack(_Blocks.blockMarker, 1), new Object[] { "x", "y", "x", 'x', "dyeBlue", 'y', new ItemStack(Blocks.TORCH, 1) });
+		add(new ItemStack(_Blocks.blockPumpPipe, 4), new Object[] { "x", "x", "x", 'x', "ingotSteel" });
 		add(new ItemStack(_Blocks.blockQuarry, 1), new Object[] { "xyx", "zaz", "xbx",
 				'x', _Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', Blocks.STONE, 'a', "blockSteel", 'b', _Items.itemQuarryHead });
+		add(new ItemStack(_Blocks.blockPump, 1), new Object[] { "xyx", "aba", "xzx",
+				'x',_Items.itemCornerWood, 'y', _Items.itemWheelWood, 'z', _Blocks.blockPumpPipe, 'a', "cobblestone", 'b', "blockSteel" });
 	}
 	
 	// -- Registry -- //

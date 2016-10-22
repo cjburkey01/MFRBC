@@ -1,5 +1,10 @@
 {
     "variants": {
-        "normal": { "model": "mfrbc:blockPump" }
+        "facing=north": { "model": "mfrbc:blockPump" },
+        "facing=south": { "model": "mfrbc:blockPump", "y": 180 },
+        "facing=west":  { "model": "mfrbc:blockPump", "y": 270 },
+        "facing=east":  { "model": "mfrbc:blockPump", "y": 90 },
+        "facing=down": { "model": "mfrbc:blockPump" },
+        "facing=up": { "model": "mfrbc:blockPump" }
     }
 }

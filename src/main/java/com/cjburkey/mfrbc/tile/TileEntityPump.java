@@ -1,10 +1,12 @@
 package com.cjburkey.mfrbc.tile;
 
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc._Config;
 import com.cjburkey.mfrbc.block.BlockPumpPipe;
 import com.cjburkey.mfrbc.block._Blocks;
 import com.cjburkey.mfrbc.fluid.FluidTank;
 import com.cjburkey.mfrbc.fluid.FluidUtilz;
+import com.cjburkey.mfrbc.item._Items;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +33,7 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	private int maxReceive;
 	private int startClock;
 	private int clock;
+	private int blocksPerRun = 1;
 	
 	public TileEntityPump() {
 		this.tank = new FluidTank(FluidUtilz.bucketToMb(_Config.pumpBuckets));
@@ -51,8 +54,11 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 			if(clock <= 0) {
 				clock = startClock;
 				if(canRun()) {
-					TileEntityPumpPipe p = pumpPipeBelow(this.worldObj, this.pos);
-					p.run();
+					this.blocksPerRun = 1 + Util.getUpgradeCount(this.worldObj, this.pos, _Items.itemUpgradeSpeed);
+					for(int i = 0; i < this.blocksPerRun; i ++) {
+						TileEntityPumpPipe p = pumpPipeBelow(this.worldObj, this.pos);
+						if(p != null) p.run();
+					}
 				}
 			}
 		}
@@ -175,7 +181,7 @@ public class TileEntityPump extends TileEntity implements ITickable, IEnergyRece
 	
 	public static TileEntityPumpPipe pumpPipeBelow(World w, BlockPos po) {
 		TileEntityPumpPipe p = pipeBelow(w, po);
-		if(p == null) w.setBlockState(po.down(), _Blocks.blockPumpPipe.getDefaultState());
+		if(p == null && (FluidUtilz.isFluid(w, po.down()) || w.isAirBlock(po.down()))) w.setBlockState(po.down(), _Blocks.blockPumpPipe.getDefaultState());
 		p = pipeBelow(w, po);
 		return p;
 	}

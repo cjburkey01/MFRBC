@@ -20,37 +20,38 @@ public class TileEntityPumpPipe extends TileEntity implements ITickable {
 	private Stack<BlockPos> fluids = new Stack<BlockPos>();
 	private boolean finished = false;
 	
+	public boolean playerPlaced = false;
+	
 	public void update() {
-		if(this.worldObj.isAirBlock(this.pos.up())) {
-			this.worldObj.destroyBlock(this.pos, false);
+		if(!this.worldObj.isRemote) {
+			if(this.worldObj.isAirBlock(this.pos.up()) && !this.playerPlaced) {
+				this.worldObj.destroyBlock(this.pos, false);
+			}
 		}
 	}
 	
 	public void run() {
-		if(pump == null) { findPump(); }
-		if(pump == null) { Util.log("No pump found."); this.worldObj.destroyBlock(this.pos, false); return; }
-		
-		if(this.worldObj.isAirBlock(this.pos.up())) {
-			this.worldObj.destroyBlock(this.pos, false);
-			return;
-		}
-		
-		if(fluids.isEmpty() && !finished) {
-			scan();
-			if(fluids.isEmpty()) {
-				TileEntityPumpPipe p = TileEntityPump.pumpPipeBelow(this.worldObj, this.pos);
-				finished = true;
+		if(!this.playerPlaced) {
+			if(pump == null) { findPump(); }
+			if(pump == null) { Util.log("No pump found."); this.worldObj.destroyBlock(this.pos, false); return; }
+			
+			TileEntityPumpPipe below;
+			if(finished && ((below = TileEntityPump.pipeBelow(this.worldObj, this.pos)) != null)) {
+				below.run();
 				return;
 			}
-		}
-		
-		TileEntityPumpPipe below;
-		if((below = TileEntityPump.pipeBelow(this.worldObj, this.pos)) != null && finished) {
-			below.run();
-			return;
-		} else if(!finished) {
-			go();
-			return;
+			
+			if(!finished) {
+				go();
+			}
+			
+			if(fluids.isEmpty() && !finished) {
+				scan();
+				if(fluids.isEmpty()) {
+					TileEntityPumpPipe p = TileEntityPump.pumpPipeBelow(this.worldObj, this.pos);
+					finished = true;
+				}
+			}
 		}
 	}
 	
@@ -80,7 +81,8 @@ public class TileEntityPumpPipe extends TileEntity implements ITickable {
 				FluidStack fs = new FluidStack(f, FluidUtilz.getBucket());
 				if(this.pump.fill(EnumFacing.NORTH, fs, true) > 0) {
 					this.pump.modifyEnergyStored(-_Config.pumpRfPerOp);
-					this.worldObj.setBlockState(next, Blocks.DIRT.getDefaultState());
+					//this.worldObj.setBlockState(next, Blocks.DIRT.getDefaultState());
+					this.worldObj.setBlockToAir(next);
 				}
 			}
 		}

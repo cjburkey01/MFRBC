@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 
 public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyReceiver, IInventory {
 	
@@ -193,7 +194,7 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			if(done() && firstTick) { firstTick = false; scan(); }
 			
 			if(!finished) {
-				this.blocksPerRun = 1 + (int) Math.floor((float) getUpgradeCount(_Items.itemUpgradeSpeed) / 1.5f);
+				this.blocksPerRun = 1 + (int) Math.floor((float) Util.getUpgradeCount(this.worldObj, this.pos, _Items.itemUpgradeSpeed) / 1.5f);
 				clock --;
 				if(clock <= 0) {
 					this.clock = this.speed;
@@ -248,45 +249,6 @@ public class TileEntityQuarry extends TileEntity implements ITickable, IEnergyRe
 			addStackToInv(i);
 		}
 		this.worldObj.destroyBlock(p, false);
-	}
-	
-	public int getUpgradeCount(Item upgradeItem) {
-		int amt = 0;
-		
-		BlockPos up = this.pos.up();
-		BlockPos down = this.pos.down();
-		BlockPos west = this.pos.west();
-		BlockPos east = this.pos.east();
-		BlockPos north = this.pos.north();
-		BlockPos south = this.pos.south();
-		
-		ItemStack u = getUpgrade(up);
-		ItemStack d = getUpgrade(down);
-		ItemStack w = getUpgrade(west);
-		ItemStack e = getUpgrade(east);
-		ItemStack n = getUpgrade(north);
-		ItemStack s = getUpgrade(south);
-		
-		if(u != null && u.getItem().equals(upgradeItem)) { amt ++; }
-		if(d != null && d.getItem().equals(upgradeItem)) { amt ++; }
-		if(w != null && w.getItem().equals(upgradeItem)) { amt ++; }
-		if(e != null && e.getItem().equals(upgradeItem)) { amt ++; }
-		if(n != null && n.getItem().equals(upgradeItem)) { amt ++; }
-		if(s != null && s.getItem().equals(upgradeItem)) { amt ++; }
-		
-		return amt;
-	}
-	
-	public ItemStack getUpgrade(BlockPos p) {
-		IBlockState s = this.worldObj.getBlockState(p);
-		if(s.getBlock() instanceof BlockUpgrader) {
-			TileEntity e = this.worldObj.getTileEntity(p);
-			if(e != null) {
-				TileEntityUpgrader te = (TileEntityUpgrader) e;
-				return te.getStackInSlot(0);
-			}
-		}
-		return null;
 	}
 	
 	// -- INVENTORY -- //

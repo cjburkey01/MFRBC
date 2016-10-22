@@ -3,12 +3,15 @@ package com.cjburkey.mfrbc.block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import com.cjburkey.mfrbc.Util;
 import com.cjburkey.mfrbc.tile.TileEntityPumpPipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -24,6 +27,14 @@ public class BlockPumpPipe extends Block implements ITileEntityProvider {
 		
 		this.setBlockUnbreakable();
 		this.setSoundType(SoundType.METAL);
+	}
+	
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack stack) {
+		if(!world.isRemote && player instanceof EntityPlayer) {
+			TileEntityPumpPipe p = (TileEntityPumpPipe) world.getTileEntity(pos);
+			p.playerPlaced = true;
+			Util.log("Player placed");
+		}
 	}
 	
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
